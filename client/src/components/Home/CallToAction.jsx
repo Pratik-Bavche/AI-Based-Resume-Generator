@@ -32,7 +32,7 @@ const CallToAction = () => {
         </p>
 
         {/* Updated Button */}
-        <button className="inline-flex items-center gap-2 px-8 py-2.5 mt-6 text-sm font-medium text-white bg-gradient-to-r from-indigo-700 to-indigo-600 rounded-lg hover:scale-105 transition duration-300 cursor-pointer">
+        <button className="inline-flex items-center gap-2 px-8 py-2.5 mt-6 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-indigo-500 rounded-lg hover:scale-105 transition duration-300 cursor-pointer">
           Get Started <ArrowRight className="size-4" />
         </button>
       </section>
