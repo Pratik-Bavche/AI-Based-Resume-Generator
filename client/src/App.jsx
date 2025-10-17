@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./Pages/Home";
-import Layout from "./Pages/Layout";
-import DashBoard from "./Pages/DashBoard";
-import ResumeBuilder from "./Pages/ResumeBuilder";
-import Preview from "./Pages/Preview";
+import Home from "./pages/Home";
+import Layout from "./pages/Layout";
+import DashBoard from "./pages/DashBoard";
+import ResumeBuilder from "./pages/ResumeBuilder";
+import Preview from "./pages/Preview";
 //import Login from "./Pages/Login";
 import { useDispatch } from "react-redux";
 import api from "./configs/api";
-import { login, setLoading } from "./app/features/authSlice";
+import { login, setLoading } from "./app/features/authSlice.js";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
