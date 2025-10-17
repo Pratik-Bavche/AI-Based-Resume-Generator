@@ -4,7 +4,7 @@ import Layout from "./Pages/Layout";
 import DashBoard from "./Pages/DashBoard";
 import ResumeBuilder from "./Pages/ResumeBuilder";
 import Preview from "./Pages/Preview";
-import Login from "./pages/Login";
+import Login from "./Pages/Login";
 import { useDispatch } from "react-redux";
 import api from "./configs/api";
 import { login, setLoading } from "./app/features/authSlice";
