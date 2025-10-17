@@ -4,12 +4,12 @@ import Layout from "./Pages/Layout";
 import DashBoard from "./Pages/DashBoard";
 import ResumeBuilder from "./Pages/ResumeBuilder";
 import Preview from "./Pages/Preview";
-import Login from "./Pages/Login";
+//import Login from "./Pages/Login";
 import { useDispatch } from "react-redux";
 import api from "./configs/api";
 import { login, setLoading } from "./app/features/authSlice";
 import { useEffect } from "react";
-import {Toaster} from 'react-hot-toast'
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const App = () => {
 
   return (
     <>
-    <Toaster/>
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="app" element={<Layout />}>
