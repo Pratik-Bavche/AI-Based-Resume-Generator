@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 🛠 FIXED: added missing slash between `/api/users` and state
+    
       const { data } = await api.post(`/api/users/${state}`, formData);
 
       dispatch(login(data));
