@@ -1,40 +1,140 @@
-# AI-Based-Resume-Generator
-The AI-Based Resume Generator is a web application that allows users to create professional, ATS-friendly resumes in just a few minutes. It leverages Artificial Intelligence (AI) to help users generate well-structured and visually appealing resumes based on their skills, experience, and job preferences.
+# AI Resume Builder
 
-🚀 Features
+AI Resume Builder is a full-stack web application that helps users create professional, ATS-friendly resumes in minutes. It combines AI-powered content enhancement and extraction with template-based rendering and automated image processing (face crop + optional background removal) to produce polished, recruiter-ready resumes.
 
-✨ AI-Powered Resume Builder – Automatically generate personalized resumes using AI prompts.
+## Key features
 
-🎨 Modern Templates – Choose from clean, recruiter-approved designs optimized for readability.
+- AI-powered content: auto-enhance professional summaries and job descriptions using OpenAI.
+- Resume extraction: convert uploaded resume text into a structured JSON schema (skills, experience, education, personal info) so users can edit and refine quickly.
+- Multiple templates: preview and switch between clean, ATS-friendly templates (Classic, Minimal, Modern, etc.).
+- Image handling: ImageKit integration for face-crop and optional background removal (e-bgremove).
+- User profiles & persistence: Node/Express API + MongoDB to save multiple resumes per user, with JWT-based auth.
+- Save / update / delete / publish resumes; get public resume links.
 
-⚡ Real-Time Preview – Instantly see changes as you edit your details.
+## How it works (high level)
 
-💾 Download Options – Export your resume in multiple formats (PDF, DOCX, etc.).
+1. Frontend (client): a React + Vite single-page app. The UI uses Redux Toolkit to store user/session state and axios to call the backend API.
+2. Backend (server): Express.js API that manages users, resumes, file uploads, and AI endpoints. The server persists resume documents in MongoDB.
+3. AI integration: The server uses the OpenAI SDK to:
+	- Enhance short text (professional summary / job description) via chat-completions with curated system prompts.
+	- Extract structured resume data from uploaded resume text by asking the model to return a strict JSON object matching a predefined schema.
+4. Image processing: Uploaded profile photos are sent to ImageKit. When requested, the server applies face-focused cropping and the `e-bgremove` transformation to remove the background and produce a polished headshot URL saved on the resume.
 
-🔍 ATS Friendly – Ensures resumes are compatible with Applicant Tracking Systems.
+## Where AI is used
 
-☁️ Data Storage (Optional) – Save and manage your resume data securely.
+- `enhanceProfessionalSummary` and `enhanceJobDescription` endpoints send user-written text to OpenAI with prompts that request concise, ATS-friendly rewrites.
+- `uploadResume` endpoint sends raw resume text to OpenAI and requests a JSON-only response containing professional_summary, skills, personal_info, experience, project, and education arrays/objects. The server parses the JSON and stores it as a `Resume` document.
 
-🛠️ Tech Stack
+Files of interest (server-side):
+- `server/Controllers/aiController.js` — AI prompts and request/response handling.
+- `server/Controllers/ResumeController.js` — resume creation, update, image upload and background-removal transformation.
+- `server/Configs/Ai.js` — OpenAI SDK config (env: `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`).
+- `server/Configs/ImageKit.js` — ImageKit SDK config (env: `IMAGEKIT_PRIVATE_KEY`).
 
-Frontend: React.js, Tailwind CSS
+## Tech stack
 
-Backend: Node.js / Express.js (optional if you plan to add backend)
+- Frontend: React 19, Vite, Tailwind CSS, Redux Toolkit, react-router, axios
+- Backend: Node.js (ESM), Express.js, Mongoose (MongoDB), multer for uploads
+- AI: OpenAI (chat completions)
+- Image handling: ImageKit (`@imagekit/nodejs`) for uploads, face crop and background removal
+- Auth: JWT + bcrypt
 
-AI Integration: OpenAI API (or similar AI text generation models)
+_(See `client/package.json` and `server/package.json` for exact dependencies.)_
 
-Database: Firebase / MongoDB (if saving user data)
+## Environment variables
 
-💡 Purpose
+Server (example envs required):
+- MONGODB_URI — your MongoDB connection URI (without trailing slash). The server appends `/resume-builder`.
+- OPENAI_API_KEY — OpenAI API key
+- OPENAI_BASE_URL — (optional) base URL for OpenAI-compatible API
+- OPENAI_MODEL — model name used for chat completions
+- IMAGEKIT_PRIVATE_KEY — ImageKit private key (used by server upload logic)
+- JWT_SECRET — secret used to sign/verify JWT tokens
 
-This project aims to simplify the resume creation process for students, job seekers, and professionals. Instead of manually formatting and writing content, users can let AI handle the heavy lifting—resulting in a polished, job-ready resume in minutes.
+Client (build-time envs for Vite):
+- VITE_BASE_URL — the base URL for the backend API used at build time (e.g., `https://api.example.com` or leave blank to use relative paths `/api`)
 
-🧩 Future Enhancements
+Important: Vite injects `VITE_*` variables at build time. If you change `VITE_BASE_URL` on your hosting provider (Vercel/Netlify), you must rebuild the client for changes to take effect.
 
-Integration with LinkedIn profile imports
+## Local development
 
-Job-specific resume optimization using AI
+1. Start the server
 
-Multilingual resume support
+```powershell
+cd server
+npm install
+# create a .env with the server environment variables (MONGODB_URI, OPENAI_API_KEY, JWT_SECRET, etc.)
+npm run server
+```
 
-AI-based cover letter generator
+2. Start the client (local dev server)
+
+```powershell
+cd client
+npm install
+# for local testing you can set VITE_BASE_URL to http://localhost:3000
+$env:VITE_BASE_URL='http://localhost:3000'
+npm run dev
+```
+
+3. Build for production
+
+```powershell
+cd client
+npm run build
+# deploy the contents of client/dist to your static host (Vercel/Netlify) — ensure VITE_BASE_URL is set in the build env
+```
+
+## Deployment notes (Vercel)
+
+- Frontend: Add `VITE_BASE_URL` in Project Settings → Environment Variables (Production). Re-deploy after setting it.
+- Backend: Deploy the `server/` app to Render, Heroku, DigitalOcean App Platform, or similar. Set envs for MongoDB, OpenAI keys, ImageKit key and `JWT_SECRET`.
+
+If your frontend and backend share the same domain (CNAME), you may prefer leaving `VITE_BASE_URL` blank and use relative `/api/...` calls to avoid CORS and make deployment simpler.
+
+## Real-world problems solved
+
+- Saves job seekers time by converting free-form or uploaded resume text into structured sections instantly.
+- Improves the quality of summaries and bullet points by rewriting them to be action-oriented and ATS-friendly.
+- Lowers friction for users who can't edit images — automatic face-cropping and optional background removal produces consistent profile photos for resumes.
+
+## Quick LinkedIn post (copy/paste)
+
+Short (1–2 lines):
+> Released — AI Resume Builder: a full-stack app that turns messy CVs into ATS-friendly resumes in minutes using OpenAI and ImageKit. Try it: https://ai-based-resume-generator-delta.vercel.app
+
+Longer (for context / features):
+> I built AI Resume Builder — a React + Vite frontend with a Node/Express + MongoDB backend that leverages OpenAI to extract and enhance resume content and ImageKit to auto-crop and optionally remove backgrounds from profile photos. It helps non-writers craft achievement-focused bullets, manage multiple role-specific resumes, and produce polished, recruiter-ready outputs quickly. DM for a demo!
+
+## API endpoints (high-level)
+
+- POST /api/users/login — login / register endpoints (auth handled via JWT)
+- POST /api/ai/enhance/summary — enhance professional summary
+- POST /api/ai/enhance/job — enhance job description
+- POST /api/ai/upload-resume — extract structured JSON from resume text
+- POST /api/resumes — create a new resume
+- PUT /api/resumes/:id — update resume (supports file upload + bg remove)
+- GET /api/resumes/:id — get private resume
+- GET /api/public-resume/:id — public resume
+
+See `server/Routes/` for the exact route names and middleware usage.
+
+## Contributing
+
+PRs welcome. Typical contributions:
+- add templates or export options
+- improve system prompts and AI validation
+- add i18n / multilingual support
+
+## License
+
+This project is provided as-is. Add your license of choice here.
+
+---
+
+If you'd like, I can also:
+- Add a one-page architecture diagram
+- Create a shorter `README_CLIENT.md` and `README_SERVER.md` with only developer setup steps
+- Add a runtime config loader so the client can read API base URL without rebuilding
+
+Tell me which follow-up you'd like and I'll update the repo accordingly.
