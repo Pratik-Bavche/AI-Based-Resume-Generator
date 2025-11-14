@@ -1,4 +1,4 @@
-# AI Resume Builder
+# 🛩️ AI Resume Builder
 
 AI Resume Builder is a full-stack web application that helps users create professional, ATS-friendly resumes in minutes. It combines AI-powered content enhancement and extraction with template-based rendering and automated image processing (face crop + optional background removal) to produce polished, recruiter-ready resumes.
 
